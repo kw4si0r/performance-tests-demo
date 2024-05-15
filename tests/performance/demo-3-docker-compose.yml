@@ -1,0 +1,66 @@
+services:
+
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=loadtests
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+
+  app:
+    image: app
+    build: ../../
+    container_name: app
+    depends_on:
+      - wiremock
+    ports:
+      - 8080:8000
+      - 9080:9000
+    environment:
+      - API_DETAILS_HOST=http://wiremock:8080
+
+  wiremock:
+    image: "wiremock/wiremock:latest"
+    container_name: wiremock
+    ports:
+      - 8090:8080
+    volumes:
+      #      - ../../mock/mappings-with-delays:/home/wiremock/mappings
+      - ../../mock/mappings:/home/wiremock/mappings
+    entrypoint: [ "/docker-entrypoint.sh", "--global-response-templating", "--disable-gzip" ]
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "7090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    environment:
+      - SOME_ENV=sth
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+
+  k6:
+    image: grafana/k6
+    container_name: k6
+    ports:
+      - "6565:6565"
+    environment:
+      - K6_OUT=influxdb=http://influxdb:8086/loadtests
+    volumes:
+      - ./:/tests
+    command: run /tests/demo-3.js --env app=http://app:8000

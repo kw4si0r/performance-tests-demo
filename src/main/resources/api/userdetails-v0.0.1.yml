@@ -1,0 +1,45 @@
+openapi: 3.0.1
+info:
+  description: "API for getting user details"
+  version: "0.0.1"
+  title: "User Details API"
+  license:
+    name: "MIT license"
+    url: "https://github.com/0i99/battleships/blob/main/LICENSE"
+paths:
+  /users/details/{userId}:
+    get:
+      tags:
+        - "user details"
+      summary: "get application info"
+      operationId: info
+      parameters:
+        - in: path
+          description: "user id"
+          name: userId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: "get user details"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailsDto'
+        '422':
+          description: "validation exception"
+components:
+  schemas:
+    DetailsDto:
+      type: "object"
+      required:
+        - "info"
+        - "description"
+      properties:
+        info:
+          type: "string"
+          example: "user detailed information"
+        description:
+          type: "string"
+          example: "some details"

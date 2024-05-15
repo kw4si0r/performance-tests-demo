@@ -1,0 +1,18 @@
+@startuml
+
+skinparam defaultFontName Arial
+skinparam defaultTextAlignment center
+
+Actor User
+
+package "<b>Demo system</b>\n[Software system]" <<Software system>> {
+    component "<b>Demo application</b>\n<u>[Container: Spring]</u>\nSimple application\nthat serves user information" <<Container>> as app
+    database "<b>Database</b>\n<u>[Container: H2]</u>\n\nUsed for store user information" <<Container>> as db
+}
+component "Details system \n[Software system]" <<Software system>> as details
+
+User -.-> app : gets information about user\n[REST]
+app -.-> db : fetch data\n[jdbc]
+app -.-> details : gets detailed info about user\n[REST]
+
+@enduml

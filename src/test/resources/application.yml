@@ -1,0 +1,14 @@
+spring.datasource:
+  url: jdbc:hsqldb:mem:hextests;sql.syntax_pgs=true
+
+spring.jpa.properties.hibernate:
+  dialect: org.hibernate.dialect.HSQLDialect
+
+
+# API definitions ------------------------------------------------------------------------------------------------------
+api:
+  details:
+    host: http://localhost:8091
+    user-details:
+      url: ${api.details.host}/user/details/
+      timeout: 13s

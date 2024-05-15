@@ -1,0 +1,54 @@
+server:
+  port: 8000
+
+management:
+  server:
+    port: 9000
+    ssl:
+      enabled: false
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: prometheus, health
+  endpoint:
+    prometheus:
+      enabled: true
+    health:
+      enabled: true
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState
+          show-details: always
+        readiness:
+          include: readinessState
+          show-details: always
+
+# DATABASE -------------------------------------------------------------------------------------------------------------
+
+spring.datasource:
+  url: jdbc:hsqldb:mem:hexdemo;sql.syntax_pgs=true
+  hikari:
+    idle-timeout: 30000
+    minimum-idle: 1
+    maximum-pool-size: 5
+    auto-commit: false
+#    read-only: true
+
+spring.jpa:
+  generate-ddl: true
+  properties.hibernate:
+    dialect: org.hibernate.dialect.HSQLDialect
+    show_sql: true
+    format_sql: true
+
+
+# API definitions ------------------------------------------------------------------------------------------------------
+api:
+  details:
+    host: http://localhost:8090
+    user-details:
+      url: ${api.details.host}/user/details/
+      timeout: 20s

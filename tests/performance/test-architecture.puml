@@ -1,0 +1,24 @@
+@startuml
+
+skinparam defaultFontName Arial
+skinparam defaultTextAlignment center
+
+Actor user
+
+package "<b>Testing system</b>\n[Software system]" <<Software system>> {
+    component "<b>K6</b>\n\nLoad testing tool" <<Container>> as k6
+}
+
+package "<b>Demo system</b>\n[Software system]" <<Software system>> {
+    component "<b>Demo application</b>\n<u>[Container: Spring]</u>\nSimple application\nthat serves user information" <<Container>> as app
+    database "<b>Database</b>\n<u>[Container: H2]</u>\n\nUsed for store user information" <<Container>> as db
+}
+component "Details system \n[Software system]" <<Software system>> as details
+
+
+user -.-> k6 : run k6 script,\ncheck results in console
+k6 -.left-> app : call application REST endpoint
+app -.-> db : fetch data\n[jdbc]
+app -.-> details : gets detailed info about user\n[REST]
+
+@enduml

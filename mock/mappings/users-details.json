@@ -1,0 +1,42 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "name": "Get user for version 2",
+        "urlPathTemplate": "/user/details/{userId}",
+        "method": "GET",
+        "pathParameters": {
+          "userId": {
+            "equalTo": "user3@pm.me"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.demo.v2+json"
+        },
+        "body": "{\"info\":\"user user3@pm.me\",\"description\":\"some details\"}"
+      }
+    },
+    {
+      "request": {
+        "name": "Get user for version 1 - delayed response",
+        "urlPathTemplate": "/user/details/{userId}",
+        "method": "GET",
+        "pathParameters": {
+          "userId": {
+            "equalTo": "user4@gmail.com"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.demo.v1+json"
+        },
+        "body": "{\"info\":\"user user4@gmail.com\",\"description\":\"some details\"}"
+      }
+    }
+  ]
+}
